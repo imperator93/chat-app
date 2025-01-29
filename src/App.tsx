@@ -1,33 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { User } from "./Types/User";
 import { UsersList } from "./Components/UsersList";
 import { ChatWindow } from "./Components/ChatWindow";
 import { LoginComponent } from "./Components/LoginComponent";
 
-import { testUsers } from "./TEST-INPUTS/UserInputs";
+import { v4 } from "uuid";
 
 import "./style.css";
+
+const CON_STRING = "http://localhost:3000";
+
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const handleSignInSubmit = (event: React.FormEvent) => {
-    console.log(event);
-  };
+  useEffect(() => {
+    fetch(`${CON_STRING}/chatApp/users`)
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }, []);
 
-  fetch("http://localhost:3000/chatApp/users", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      name: "Leo",
-      age: 32,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => console.log(data));
+  const handleSignInSubmit = (
+    event: React.FormEvent,
+    avatarSelected: string
+  ) => {
+    const userInput = ((event.target as HTMLFormElement)[0] as HTMLInputElement)
+      .value;
+
+    event.preventDefault();
+    setCurrentUser({
+      avatar: avatarSelected,
+      isAdmin: false,
+      isOnline: true,
+      name: userInput,
+      userId: v4(),
+    });
+  };
   return (
     <main>
       <div

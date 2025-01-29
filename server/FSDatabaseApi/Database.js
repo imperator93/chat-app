@@ -14,10 +14,20 @@ export class Database {
         fs.writeFile(DATABASE_STRING, JSON.stringify(users), (err) => {
             if (err) throw new Error(err)
         })
+        return obj;
     }
-    static readFromFile = async (id) => {
+    static readFromFile = async (id = "") => {
         try {
-            const user = await fs.readFile(DATABASE_STRING)
+            const usersFromFile = await fs.readFile(DATABASE_STRING);
+            const users = JSON.parse(usersFromFile);
+            if (usersFromFile.length == 0) {
+                return [];
+            }
+            if (id == "") {
+                return users;
+            }
+            else return users.find(user => user.id == id)
+
         } catch (err) {
             throw new Error(err)
         }
