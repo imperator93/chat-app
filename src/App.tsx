@@ -18,9 +18,9 @@ export const App = () => {
   useEffect(() => {
     fetch(`${CON_STRING}/chatApp/users`)
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => setUsers(data));
   }, []);
-
+  console.log(users);
   const handleSignInSubmit = (
     event: React.FormEvent,
     avatarSelected: string

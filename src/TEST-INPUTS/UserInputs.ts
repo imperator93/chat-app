@@ -5,10 +5,7 @@ const leo: User = {
   name: "Leo",
   avatar: "https://i.imgur.com/f5jpfxR.jpg",
   isAdmin: true,
-  password: "12345",
-  messages: [],
   isOnline: false,
-  isCurrentUser: false,
 };
 
 const asy: User = {
@@ -16,10 +13,7 @@ const asy: User = {
   name: "Asy",
   avatar: "https://i.imgur.com/RPi2Du9.jpg",
   isAdmin: false,
-  password: "54321",
-  messages: [],
   isOnline: false,
-  isCurrentUser: false,
 };
 
 export const testUsers = [asy, leo];

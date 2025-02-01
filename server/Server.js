@@ -3,8 +3,13 @@ import { Database } from "./FSDatabaseApi/Database.js";
 import cors from "cors"
 
 import { User } from "./models/User.model.js";
+
 const app = express();
+app.use(express.json());
+
 const PORT = 3000;
+
+
 app.listen(PORT, () => {
     console.log(`listening to port ${PORT}`)
 })
@@ -15,20 +20,21 @@ app.get("/", (req, res) => {
     res.send({ some: "hello" })
 })
 
-// KEEP GETTING NULL FOR SOME REASON
 //ADD USER
 app.post("/chatApp/users", async (req, res) => {
     try {
-        const user = new User(name = req.body.name, req.body.avatar, req.body.isAdmin, req.body.isOnline);
-        await Database.writeToFile(user);
-        res.sendStatus(200).json({
-            message: "user created",
-            user: user,
-
-        })
+        const user = new User(req.body.name, req.body.avatar, req.body.isAdmin, req.body.isOnline);
+        const ok = await Database.writeToFile(user);
+        if (ok.success) {
+            res.json(user)
+        } else {
+            res.json({
+                message: ok.reason,
+            })
+        }
     } catch (err) {
-        res.sendStatus(400).json({
-            message: err.mesage
+        res.json({
+            message: err.mesage,
         })
     }
 }
@@ -38,24 +44,23 @@ app.post("/chatApp/users", async (req, res) => {
 app.get("/chatApp/users", async (req, res) => {
     try {
         const users = await Database.readFromFile()
-        res.send(users);
+        res.json(users);
     } catch (err) {
-        res.sendStatus(400).json({
+        res.json({
             message: err.mesage
         })
     }
 })
 
 //GET MESSAGES
-app.get("/chatApp/:userID", async (req, res) => {
+app.get("/chatApp/users/:userId", async (req, res) => {
     try {
-        const userID = req.params.userID;
-        res.sendStatus(200).json({
-            message: "works"
-        })
+        const userID = req.params.userId;
+        const user = await Database.readFromFile(userID);
+        res.json(user);
     } catch (err) {
-        res.status(400).json({
-            mesage: err,
+        res.json({
+            mesage: err.message,
         })
     }
 })
