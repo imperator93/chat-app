@@ -37,7 +37,7 @@ export const LoginComponent = ({
           <strong style={{ fontSize: "20px" }}>Username</strong>
         </label>
         <input
-          minLength={5}
+          minLength={3}
           maxLength={15}
           required
           style={{

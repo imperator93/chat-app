@@ -2,12 +2,34 @@ import { User } from "../Types/User";
 
 export const UserComponent = ({ user }: { user: User }) => {
   return (
-    <div
+    <button
       className="user-container"
-      style={{ display: "flex", width: "100%", height: "200px" }}
+      style={{
+        cursor: "pointer",
+        display: "flex",
+        width: "100%",
+        height: "fit-content",
+        gap: "2px",
+        border: "none",
+        backgroundColor: "transparent",
+
+        opacity: user.isOnline ? "100%" : "60%",
+      }}
     >
-      <img src={user.avatar} style={{ height: "50px", width: "50px" }} />
-      <h3>{user.name}</h3>
-    </div>
+      <img src={user.avatar} />
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <h4>{user.name}</h4>
+        <p style={{ color: user.isOnline ? "green" : "red" }}>
+          {user.isOnline ? "online" : "offline"}
+        </p>
+      </div>
+    </button>
   );
 };

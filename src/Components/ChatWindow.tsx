@@ -1,11 +1,7 @@
-import { SetStateAction } from "react";
-import { User } from "../Types/User";
+import { Message } from "../Types/Message";
+import { MessageComponent } from "./MessageComponent";
 
-export const ChatWindow = ({
-  setUsers,
-}: {
-  setUsers: React.Dispatch<SetStateAction<User[]>>;
-}) => {
+export const ChatWindow = ({ messages }: { messages: Message[] }) => {
   const handleOnSubmit = (event: React.FormEvent) => {
     event.preventDefault();
   };
@@ -23,11 +19,16 @@ export const ChatWindow = ({
     >
       <div
         style={{
+          overflowY: "auto",
           width: "95%",
           height: "50%",
           background: "white",
         }}
-      ></div>
+      >
+        {messages.map((messageItem) => (
+          <MessageComponent key={messageItem.id} messageItem={messageItem} />
+        ))}
+      </div>
       <form
         onSubmit={(event) => handleOnSubmit(event)}
         style={{ width: "90%", display: "flex", marginTop: "5px" }}

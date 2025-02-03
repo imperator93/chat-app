@@ -1,10 +1,12 @@
 import { User } from "../Types/User";
+import { UserComponent } from "./UserComponent";
 
 export const UsersList = ({ users }: { users: User[] }) => {
   return (
     <div
       className="users-container"
       style={{
+        userSelect: "none",
         display: "inline-flex",
         flexDirection: "column",
         gap: "2px",
@@ -13,15 +15,18 @@ export const UsersList = ({ users }: { users: User[] }) => {
         borderRight: "2px solid black",
       }}
     >
-      {users.map((user) => (
-        <div key={user.userId} style={{ display: "flex", gap: "5px" }}>
-          <img
-            style={{ display: "inline", width: "50px", height: "50px" }}
-            src={user.avatar}
-          ></img>
-          <p style={{ alignContent: "center" }}>{user.name}</p>
-        </div>
-      ))}
+      <strong>ONLINE</strong>
+      {users
+        .filter((user) => user.isOnline)
+        .map((user) => (
+          <UserComponent user={user} key={user.userId} />
+        ))}
+      <strong>OFFLINE</strong>
+      {users
+        .filter((user) => !user.isOnline)
+        .map((user) => (
+          <UserComponent user={user} key={user.userId} />
+        ))}
     </div>
   );
 };
