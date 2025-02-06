@@ -1,6 +1,6 @@
 import { User } from "../Types/User";
 import { UserComponent } from "./UserComponent";
-import { UserLoadingComponent } from "./UserLoadingComponent";
+import { UserLoadingComponent } from "./MinorComponents/UserLoadingComponent";
 
 export const UsersList = ({
   users,
