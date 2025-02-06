@@ -1,9 +1,11 @@
-export class message {
-    constructor(id, content, from, toGroup) {
-        this.id = id;
+import { v4 } from "uuid";
+
+export class Message {
+    constructor(content, from, participants) {
+        this.id = v4();
         this.content = content;
         this.from = from;
-        this.toGroup = toGroup;
-        this.date = new Date(Date.now().toLocaleString());
+        this.participants = participants;
+        this.date = new Date(Date.now());
     }
 }

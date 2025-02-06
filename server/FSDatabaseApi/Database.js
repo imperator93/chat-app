@@ -1,29 +1,33 @@
-import { rejects } from "assert";
 import * as fs from "fs";
 
-const DATABASE_STRING = "C:\\Users\\stoja\\PROJECTS\\Chat-app\\server\\FSDatabaseApi\\DATABASE.txt"
+const USER_DATABASE_STRING = "C:\\Users\\stoja\\PROJECTS\\Chat-app\\server\\FSDatabaseApi\\UserDatabase.txt"
+const MESSAGES_DATABASE_STRING = "C:\\Users\\stoja\\PROJECTS\\Chat-app\\server\\FSDatabaseApi\\MessagesDatabase.txt"
 
 export class Database {
 
-    static writeToFile = async (obj) => new Promise((resolve, reject) => {
-        fs.readFile(DATABASE_STRING, "utf-8", (err, data) => {
+    static writeUserToFile = async (obj) => new Promise((resolve, reject) => {
+        fs.readFile(USER_DATABASE_STRING, "utf-8", (err, data) => {
+
             if (err) reject({ success: false, reason: err.message });
 
             const users = data.length == 0 ? [] : JSON.parse(data);
+
             const user = users.find(user => user.name == obj.name)
-            if (user) resolve({ success: false, reason: "User Exists" })
+
+            if (user) resolve({ success: false, reason: "UserExists" })
+
             else {
                 users.push(obj);
-                fs.writeFile(DATABASE_STRING, JSON.stringify(users), (err, data) => {
+                fs.writeFile(USER_DATABASE_STRING, JSON.stringify(users), (err, data) => {
                     if (err) reject(err);
-                    else resolve({ success: true, obj });
+                    else resolve({ success: true });
                 })
             }
         })
     })
 
-    static readFromFile = async (id = "") => new Promise((resolve, reject) => {
-        fs.readFile(DATABASE_STRING, "utf-8", (err, data) => {
+    static readUserFromFile = async (id = "") => new Promise((resolve, reject) => {
+        fs.readFile(USER_DATABASE_STRING, "utf-8", (err, data) => {
             if (err) reject(err.message)
             const users = data.length == 0 ? [] : JSON.parse(data);
             if (id.length != 0) {
@@ -34,4 +38,16 @@ export class Database {
                 resolve(users);
         })
     })
+
+    static writeMessagesToFile = async () => new Promise((resolve, reject) => {
+        fs.readFile(MESSAGES_DATABASE_STRING, "utf-8", (err, data) => {
+            if (err) reject(err.message)
+
+        })
+    })
+}
+
+const messages = {
+    participants: [],
+    contents: [],
 }

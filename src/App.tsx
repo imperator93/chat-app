@@ -7,24 +7,25 @@ import { LoginComponent } from "./Components/LoginComponent";
 import { User } from "./Types/User";
 import { Message } from "./Types/Message";
 
-import { v4 } from "uuid";
+//CRUD
+import { getUsers, postUser } from "./Api/UsersCRUD";
 
 import "./style.css";
-const CON_STRING = "http://localhost:3000";
 //TEST INPUTS
-import { messageArr } from "./TEST-INPUTS/MessageInputs";
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [messages, setMessages] = useState<Message[]>(messageArr);
+  const [messages, setMessages] = useState<Message[]>();
   const [currentUser, setCurrentUser] = useState<User>();
 
   useEffect(() => {
     const user = sessionStorage.getItem("user");
+
     if (user) setCurrentUser(JSON.parse(user));
 
-    fetch(`${CON_STRING}/chatApp/users`)
-      .then((res) => res.json())
-      .then((data) => setUsers(data));
+    const i = setInterval(() => {
+      getUsers(setUsers);
+      return () => clearInterval(i);
+    }, 1000);
   }, []);
 
   useEffect(() => {
@@ -32,25 +33,27 @@ export const App = () => {
       sessionStorage.setItem("user", JSON.stringify(currentUser));
   }, [currentUser]);
 
-  console.log(sessionStorage);
-
+  //HANDLE SIGN IN
   const handleSignInSubmit = (
     event: React.FormEvent,
     avatarSelected: string
   ) => {
+    event.preventDefault();
+
     const userInput = ((event.target as HTMLFormElement)[0] as HTMLInputElement)
       .value;
-
-    event.preventDefault();
-    setCurrentUser({
-      avatar: avatarSelected,
-      isAdmin: false,
-      isOnline: true,
-      name: userInput,
-      userId: v4(),
-    });
+    postUser(
+      {
+        avatar: avatarSelected,
+        isAdmin: false,
+        isOnline: true,
+        name: userInput,
+      },
+      setCurrentUser
+    );
   };
 
+  const handleUserClicked = (event: React.BaseSyntheticEvent) => {};
   return (
     <main>
       <div
@@ -67,7 +70,7 @@ export const App = () => {
           <LoginComponent handleSignInSubmit={handleSignInSubmit} />
         ) : (
           <>
-            <UsersList users={users} />
+            <UsersList handleUserClicked={handleUserClicked} users={users} />
             <ChatWindow messages={messages} />
           </>
         )}

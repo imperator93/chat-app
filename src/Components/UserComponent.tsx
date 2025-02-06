@@ -1,8 +1,16 @@
 import { User } from "../Types/User";
 
-export const UserComponent = ({ user }: { user: User }) => {
+export const UserComponent = ({
+  user,
+  handleUserClicked,
+}: {
+  user: User;
+  handleUserClicked: (event: React.BaseSyntheticEvent) => void;
+}) => {
   return (
     <button
+      id={user.userId}
+      onClick={(event) => handleUserClicked(event)}
       className="user-container"
       style={{
         cursor: "pointer",
@@ -12,21 +20,26 @@ export const UserComponent = ({ user }: { user: User }) => {
         gap: "2px",
         border: "none",
         backgroundColor: "transparent",
-
         opacity: user.isOnline ? "100%" : "60%",
       }}
     >
-      <img src={user.avatar} />
+      <img style={{ pointerEvents: "none" }} src={user.avatar} />
       <div
         style={{
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
+          pointerEvents: "none",
         }}
       >
-        <h4>{user.name}</h4>
-        <p style={{ color: user.isOnline ? "green" : "red" }}>
+        <h4 style={{ pointerEvents: "none" }}>{user.name}</h4>
+        <p
+          style={{
+            color: user.isOnline ? "green" : "red",
+            pointerEvents: "none",
+          }}
+        >
           {user.isOnline ? "online" : "offline"}
         </p>
       </div>

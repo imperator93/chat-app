@@ -1,7 +1,14 @@
 import { User } from "../Types/User";
 import { UserComponent } from "./UserComponent";
+import { UserLoadingComponent } from "./UserLoadingComponent";
 
-export const UsersList = ({ users }: { users: User[] }) => {
+export const UsersList = ({
+  users,
+  handleUserClicked,
+}: {
+  users: User[];
+  handleUserClicked: (event: React.BaseSyntheticEvent) => void;
+}) => {
   return (
     <div
       className="users-container"
@@ -16,17 +23,33 @@ export const UsersList = ({ users }: { users: User[] }) => {
       }}
     >
       <strong>ONLINE</strong>
-      {users
-        .filter((user) => user.isOnline)
-        .map((user) => (
-          <UserComponent user={user} key={user.userId} />
-        ))}
+      {users.length > 0 ? (
+        users
+          .filter((user) => user.isOnline)
+          .map((user) => (
+            <UserComponent
+              handleUserClicked={handleUserClicked}
+              user={user}
+              key={user.userId}
+            />
+          ))
+      ) : (
+        <UserLoadingComponent />
+      )}
       <strong>OFFLINE</strong>
-      {users
-        .filter((user) => !user.isOnline)
-        .map((user) => (
-          <UserComponent user={user} key={user.userId} />
-        ))}
+      {users.length > 0 ? (
+        users
+          .filter((user) => !user.isOnline)
+          .map((user) => (
+            <UserComponent
+              handleUserClicked={handleUserClicked}
+              user={user}
+              key={user.userId}
+            />
+          ))
+      ) : (
+        <UserLoadingComponent />
+      )}
     </div>
   );
 };

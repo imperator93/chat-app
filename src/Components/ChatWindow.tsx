@@ -1,7 +1,11 @@
 import { Message } from "../Types/Message";
 import { MessageComponent } from "./MessageComponent";
 
-export const ChatWindow = ({ messages }: { messages: Message[] }) => {
+export const ChatWindow = ({
+  messages,
+}: {
+  messages: Message[] | undefined;
+}) => {
   const handleOnSubmit = (event: React.FormEvent) => {
     event.preventDefault();
   };
@@ -19,13 +23,14 @@ export const ChatWindow = ({ messages }: { messages: Message[] }) => {
     >
       <div
         style={{
+          marginTop: "2%",
           overflowY: "auto",
           width: "95%",
           height: "50%",
           background: "white",
         }}
       >
-        {messages.map((messageItem) => (
+        {messages?.map((messageItem) => (
           <MessageComponent key={messageItem.id} messageItem={messageItem} />
         ))}
       </div>
