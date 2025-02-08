@@ -27,3 +27,20 @@ export const postUser = async (
     console.log(userFromServer);
   }
 };
+
+export const putUser = async (
+  user: User,
+  setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
+) => {
+  const response = await fetch(`${CON_STRING}/chatApp/users`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(user),
+  });
+  if (response.ok) {
+    const userFromServer: User = await response.json();
+    setCurrentUser(userFromServer);
+  }
+};

@@ -3,8 +3,10 @@ import { MessageComponent } from "./MessageComponent";
 
 export const ChatWindow = ({
   messages,
+  handleLogOut,
 }: {
   messages: Message[] | undefined;
+  handleLogOut: () => void;
 }) => {
   const handleOnSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -46,6 +48,7 @@ export const ChatWindow = ({
           SEND
         </button>
       </form>
+      <button onClick={() => handleLogOut()}>LOGOUT</button>
     </div>
   );
 };

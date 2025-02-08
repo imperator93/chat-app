@@ -8,7 +8,7 @@ import { User } from "./Types/User";
 import { Message } from "./Types/Message";
 
 //CRUD
-import { getUsers, postUser } from "./Api/UsersCRUD";
+import { getUsers, postUser, putUser } from "./Api/UsersCRUD";
 
 import "./style.css";
 //TEST INPUTS
@@ -53,6 +53,11 @@ export const App = () => {
     );
   };
 
+  const handleLogOut = () => {
+    const user: User = { ...currentUser!, isOnline: false };
+    putUser(user, setCurrentUser);
+  };
+
   const handleUserClicked = (event: React.BaseSyntheticEvent) => {};
   return (
     <main>
@@ -71,7 +76,7 @@ export const App = () => {
         ) : (
           <>
             <UsersList handleUserClicked={handleUserClicked} users={users} />
-            <ChatWindow messages={messages} />
+            <ChatWindow handleLogOut={handleLogOut} messages={messages} />
           </>
         )}
       </div>
