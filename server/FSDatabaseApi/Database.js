@@ -19,19 +19,38 @@ export class Database {
 
             if (user) resolve(new DatabaseResponse(false, "User Exists!"));
 
+            else {
+                users.push(obj);
+
+                fs.writeFile(USER_DATABASE_STRING, JSON.stringify(users), (err) => {
+                    if (err) reject(new DatabaseResponse(false, err.message))
+                    else resolve(new DatabaseResponse(true, "User Created!", obj));
+                })
+            }
         })
     })
 
-    static readUserFromFile = async (id = "") => new Promise((resolve, reject) => {
+    static readUserFromFile = async (obj = null) => new Promise((resolve, reject) => {
         fs.readFile(USER_DATABASE_STRING, "utf-8", (err, data) => {
-            if (err) reject(err.message)
-            const users = data.length == 0 ? [] : JSON.parse(data);
-            if (id.length != 0) {
-                const user = users.find(user => user.userId == id);
-                resolve(user ? { success: true, user } : { success: false, reason: "User Not Found!" });
+            if (err) reject(new DatabaseResponse(false, err.message));
+
+            const users = data.length > 0 ? JSON.parse(data) : [];
+
+            if (obj != null) {
+                const user = users.find(item => item.name == obj.name);
+
+                if (!user) resolve(new DatabaseResponse(false, "User not Found!"));
+
+                else if (user.isOnline) resolve(new DatabaseResponse(false, "User already online"));
+
+                else if (user.password != obj.password) {
+                    resolve(new DatabaseResponse(false, "Wrong password"));
+                }
+                else resolve(new DatabaseResponse(true, "user found", user));
             }
-            else
-                resolve(users);
+            else {
+                resolve(new DatabaseResponse(true, "Users list", users));
+            }
         })
     })
 

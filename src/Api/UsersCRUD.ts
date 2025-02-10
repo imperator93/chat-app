@@ -1,15 +1,36 @@
 import { SetStateAction } from "react";
+
 import { User } from "../Types/User";
+import { GetUserType } from "../Types/GetUserType";
+
 import { CON_STRING } from "../CONSTANTS/CONNECTION_STRING";
 
+//GET USERS
 export const getUsers = async (
   setUsers: React.Dispatch<SetStateAction<User[]>>
 ) => {
   const response = await fetch(`${CON_STRING}/chatApp/users`);
-  const user = await response.json();
-  setUsers(user);
+  const data = await response.json();
+  setUsers(data);
 };
 
+//GET USER
+export const getUser = async (
+  user: GetUserType,
+  setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
+) => {
+  const response = await fetch(`${CON_STRING}/chatApp/user`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(user),
+  });
+  const data = await response.json();
+  setCurrentUser(data);
+};
+
+//POST USER
 export const postUser = async (
   user: Omit<User, "userId">,
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>

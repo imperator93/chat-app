@@ -5,11 +5,14 @@ import { ChatWindow } from "./Components/ChatWindow";
 
 import { User } from "./Types/User";
 import { Message } from "./Types/Message";
-import { SignInComponent } from "./Components/SIgnInComponent";
+import { SignInComponent } from "./Components/SignInComponent";
 import { LoginComponent } from "./Components/LoginComponent";
 
 //CRUD
-import { getUsers, postUser, putUser } from "./Api/UsersCRUD";
+import { getUser, getUsers, postUser, putUser } from "./Api/UsersCRUD";
+
+//CRUD TYPES
+import { GetUserType } from "./Types/GetUserType";
 
 import "./style.css";
 export const App = () => {
@@ -23,10 +26,12 @@ export const App = () => {
 
     if (user) setCurrentUser(JSON.parse(user));
 
-    const i = setInterval(() => {
-      getUsers(setUsers);
-      return () => clearInterval(i);
-    }, 1000);
+    if (currentUser?.isOnline) {
+      const i = setInterval(() => {
+        getUsers(setUsers);
+        return () => clearInterval(i);
+      }, 1000);
+    }
   }, []);
 
   useEffect(() => {
@@ -56,6 +61,24 @@ export const App = () => {
     postUser(userToPost, setCurrentUser);
   };
 
+  //HANDLE LOG IN SUBMIT
+  const handleLogInSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const username = ((event.target as HTMLFormElement)[0] as HTMLInputElement)
+      .value;
+
+    const password = ((event.target as HTMLFormElement)[1] as HTMLInputElement)
+      .value;
+
+    const user: GetUserType = {
+      name: username,
+      password: password,
+    };
+
+    getUser(user, setCurrentUser);
+  };
+
   const handleLogOut = () => {
     const user: User = { ...currentUser!, isOnline: false };
     putUser(user, setCurrentUser);
@@ -75,12 +98,19 @@ export const App = () => {
         }}
       >
         {!currentUser?.isOnline ? (
-          <SignInComponent
-            handleSignInSubmit={handleSignInSubmit}
-            setLogin={setLogin}
-          />
-        ) : login ? (
-          <LoginComponent />
+          <>
+            {!login ? (
+              <SignInComponent
+                handleSignInSubmit={handleSignInSubmit}
+                setLogin={setLogin}
+              />
+            ) : (
+              <LoginComponent
+                handleLogInSubmit={handleLogInSubmit}
+                setLogin={setLogin}
+              />
+            )}
+          </>
         ) : (
           <>
             <UsersList handleUserClicked={handleUserClicked} users={users} />
