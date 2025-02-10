@@ -1,5 +1,7 @@
 import * as fs from "fs";
+
 import { handleDuplicateUser } from "./../helpers/handleDuplicateUser.js"
+import { DatabaseResponse } from "../models/DatabaseResponse.js";
 
 const USER_DATABASE_STRING = "C:\\Users\\stoja\\PROJECTS\\Chat-app\\server\\FSDatabaseApi\\UserDatabase.txt"
 const MESSAGES_DATABASE_STRING = "C:\\Users\\stoja\\PROJECTS\\Chat-app\\server\\FSDatabaseApi\\MessagesDatabase.txt"
@@ -8,6 +10,14 @@ export class Database {
     //NEED FIX
     static writeUserToFile = async (obj) => new Promise((resolve, reject) => {
         fs.readFile(USER_DATABASE_STRING, "utf-8", (err, data) => {
+
+            if (err) reject(new DatabaseResponse(false, err.message));
+
+            const users = data.length == 0 ? [] : JSON.parse(data);
+
+            const user = users.find(item => item.name == obj.name);
+
+            if (user) resolve(new DatabaseResponse(false, "User Exists!"));
 
         })
     })
