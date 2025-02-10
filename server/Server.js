@@ -31,11 +31,10 @@ app.get("/chatApp/users", async (_, res) => {
     }
 })
 
-
 //ADD USER
 app.post("/chatApp/users", async (req, res) => {
     try {
-        const user = new User(name = req.body.name, avatar = req.body.avatar, isAdmin = req.body.isAdmin, isOnline = req.body.isOnline);
+        const user = new User(req.body.name, req.body.avatar, req.body.isAdmin, req.body.isOnline, req.body.password);
         const dbResponse = await Database.writeUserToFile(user);
         if (dbResponse.success) {
             res.json(dbResponse.user)
@@ -46,7 +45,7 @@ app.post("/chatApp/users", async (req, res) => {
         }
     } catch (err) {
         res.json({
-            message: err.mesage,
+            message: err.message,
         })
     }
 }
@@ -55,7 +54,7 @@ app.post("/chatApp/users", async (req, res) => {
 //UPDATE USER
 app.put("/chatApp/users", async (req, res) => {
     try {
-        const user = await Database.changeUserFromFile(req.body)
+        const user = await Database.changeUserFromFile(req.body);
         res.json(user);
     } catch (err) {
         res.json({ message: err.message })

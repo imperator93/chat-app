@@ -14,17 +14,21 @@ export const postUser = async (
   user: Omit<User, "userId">,
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
 ) => {
-  const response = await fetch(`${CON_STRING}/chatApp/users`, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(user),
-  });
-  if (response.ok) {
-    const userFromServer: User = await response.json();
-    setCurrentUser(userFromServer);
-    console.log(userFromServer);
+  try {
+    const response = await fetch(`${CON_STRING}/chatApp/users`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+
+    if (response.ok) {
+      const userFromServer: User = await response.json();
+      setCurrentUser(userFromServer);
+    }
+  } catch (err: unknown) {
+    console.error(err);
   }
 };
 
@@ -32,15 +36,21 @@ export const putUser = async (
   user: User,
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
 ) => {
-  const response = await fetch(`${CON_STRING}/chatApp/users`, {
-    method: "PUT",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(user),
-  });
-  if (response.ok) {
-    const userFromServer: User = await response.json();
-    setCurrentUser(userFromServer);
+  try {
+    const response = await fetch(`${CON_STRING}/chatApp/users`, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    if (response.ok) {
+      const text = await response.text();
+      console.log(text);
+      const userFromServer: User = await response.json();
+      setCurrentUser(userFromServer);
+    }
+  } catch (err: unknown) {
+    console.log(err);
   }
 };
