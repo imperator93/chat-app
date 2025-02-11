@@ -1,6 +1,6 @@
 export type UserValidation = {
-  validName: boolean;
-  validPass: boolean;
+  invalidName: boolean;
+  invalidPass: boolean;
   passMessage: string;
   nameMessage: string;
 };

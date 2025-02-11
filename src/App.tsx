@@ -9,7 +9,7 @@ import { SignInComponent } from "./Components/SignInComponent";
 import { LoginComponent } from "./Components/LoginComponent";
 
 //CRUD
-import { getUser, getUsers, postUser, putUser } from "./Api/UsersCRUD";
+import { getUser, getUsers, createUser, putUser } from "./Api/UsersCRUD";
 
 //CRUD TYPES
 import { GetUserType } from "./Types/GetUserType";
@@ -20,13 +20,13 @@ export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>();
   const [userValidated, setUserValidated] = useState<UserValidation>({
-    validName: false,
-    validPass: false,
-    errMessage: "",
+    invalidName: false,
+    invalidPass: false,
+    nameMessage: "",
+    passMessage: "",
   });
 
   const [messages, setMessages] = useState<Message[]>([]);
-
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
@@ -66,9 +66,9 @@ export const App = () => {
       name: username,
       password: password,
     };
-    postUser(userToPost, setCurrentUser);
+    createUser(userToPost, setCurrentUser, setUserValidated);
   };
-
+  console.log(userValidated);
   //HANDLE LOG IN SUBMIT
   const handleLogInSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -115,6 +115,7 @@ export const App = () => {
               />
             ) : (
               <LoginComponent
+                userValidated={userValidated}
                 handleLogInSubmit={handleLogInSubmit}
                 setLogin={setLogin}
               />

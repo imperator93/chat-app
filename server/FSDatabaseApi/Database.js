@@ -11,19 +11,19 @@ export class Database {
     static writeUserToFile = async (obj) => new Promise((resolve, reject) => {
         fs.readFile(USER_DATABASE_STRING, "utf-8", (err, data) => {
 
-            if (err) reject(new DatabaseResponse(false, err.message));
+            if (err) reject(new DatabaseResponse(false, err.message, null));
 
             const users = data.length == 0 ? [] : JSON.parse(data);
 
             const user = users.find(item => item.name == obj.name);
 
-            if (user) resolve(new DatabaseResponse(false, "User Exists!"));
+            if (user) resolve(new DatabaseResponse(false, "User Exists!", null));
 
             else {
                 users.push(obj);
 
                 fs.writeFile(USER_DATABASE_STRING, JSON.stringify(users), (err) => {
-                    if (err) reject(new DatabaseResponse(false, err.message))
+                    if (err) reject(new DatabaseResponse(false, err.message, null))
                     else resolve(new DatabaseResponse(true, "User Created!", obj));
                 })
             }

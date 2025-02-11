@@ -4,6 +4,7 @@ import { avatarArr } from "../TEST-INPUTS/AvatarArr";
 
 import { Button } from "./MinorComponents/Button";
 import { InputComponent } from "./MinorComponents/InputComponent";
+import { UserValidation } from "../Types/UserValidation";
 
 export const SignInComponent = ({
   handleSignInSubmit,
@@ -12,7 +13,7 @@ export const SignInComponent = ({
 }: {
   handleSignInSubmit: (event: React.FormEvent, avatarSelected: string) => void;
   setLogin: React.Dispatch<SetStateAction<boolean>>;
-  userValidated: { validName: boolean; validPass: boolean };
+  userValidated: UserValidation;
 }) => {
   const [avatarSelected, setAvatarSelected] = useState("");
 
@@ -30,6 +31,7 @@ export const SignInComponent = ({
       }}
     >
       <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Sign In</h1>
+
       <form
         onSubmit={(event) => handleSignInSubmit(event, avatarSelected)}
         style={{
@@ -44,9 +46,11 @@ export const SignInComponent = ({
           <label>
             <strong style={{ fontSize: "20px" }}>Username</strong>
           </label>
-          {userValidated.validName && (
+
+          {userValidated.invalidName && (
             <p style={{ color: "red" }}>Username exists</p>
           )}
+
           <InputComponent placeholder="enter username" type="text" />
 
           <label>
@@ -54,11 +58,11 @@ export const SignInComponent = ({
               Password
             </strong>
           </label>
-          {userValidated.validPass && (
-            <p style={{ color: "red" }}>Wrong password</p>
-          )}
+
           <InputComponent placeholder="enter password" type="password" />
+
           <br />
+
           <strong style={{ fontSize: "20px" }}>Pick avatar</strong>
         </div>
         <div style={{ display: "flex" }}>

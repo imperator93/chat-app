@@ -24,9 +24,7 @@ app.get("/", (req, res) => {
 app.get("/chatApp/users", async (_, res) => {
     try {
         const dbResponse = await Database.readUserFromFile();
-        if (dbResponse.success) {
-            res.json(dbResponse)
-        }
+        res.json(dbResponse)
     } catch (err) {
         res.json({
             message: err.mesage
@@ -35,7 +33,7 @@ app.get("/chatApp/users", async (_, res) => {
 })
 
 //GET USER
-app.post("/chatApp/user", async (req, res) => {
+app.post("/chatApp/user/login", async (req, res) => {
     try {
         const user = new GetUser(req.body.name, req.body.password);
 
@@ -51,19 +49,13 @@ app.post("/chatApp/user", async (req, res) => {
 })
 
 //ADD USER
-app.post("/chatApp/user", async (req, res) => {
+app.post("/chatApp/user/register", async (req, res) => {
     try {
         const user = new User(req.body.name, req.body.avatar, req.body.isAdmin, req.body.isOnline, req.body.password);
 
         const dbResponse = await Database.writeUserToFile(user);
 
-        if (!dbResponse.success) {
-
-            res.json(dbResponse.reason);
-        } else {
-
-            res.json(dbResponse.data);
-        }
+        res.json(dbResponse);
 
     } catch (err) {
         res.json({

@@ -24,7 +24,7 @@ export const getUser = async (
   user: GetUserType,
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
 ) => {
-  const response = await fetch(`${CON_STRING}/chatApp/user`, {
+  const response = await fetch(`${CON_STRING}/chatApp/user/login`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -38,24 +38,31 @@ export const getUser = async (
 };
 
 //POST USER
-export const postUser = async (
+export const createUser = async (
   user: Omit<User, "userId">,
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>,
-  setUserValidated: React.Dispatch<SetStateAction<UserValidation>>
+  setUserValidate: React.Dispatch<SetStateAction<UserValidation>>
 ) => {
   try {
-    const response = await fetch(`${CON_STRING}/chatApp/user`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
+    const response: Response = await fetch(
+      `${CON_STRING}/chatApp/user/register`,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(user),
+      }
+    );
     if (response.ok) {
-      const userFromApi: DatabaseResponseUser = await response.json();
-      if (!userFromApi.success) {
-        console.log(userFromApi.reason);
-      } else setCurrentUser(userFromApi.data);
+      const dbResponse: DatabaseResponseUser = await response.json();
+      if (!dbResponse.success) {
+        setUserValidate((prev) => ({
+          ...prev,
+          nameMessage: dbResponse.reason,
+          invalidName: true,
+        }));
+      } else setCurrentUser(dbResponse.data);
     }
   } catch (err: unknown) {
     console.error(err);

@@ -1,13 +1,16 @@
 import { SetStateAction } from "react";
 import { Button } from "./MinorComponents/Button";
 import { InputComponent } from "./MinorComponents/InputComponent";
+import { UserValidation } from "../Types/UserValidation";
 
 export const LoginComponent = ({
   handleLogInSubmit,
   setLogin,
+  userValidated,
 }: {
   handleLogInSubmit: (event: React.FormEvent) => void;
   setLogin: React.Dispatch<SetStateAction<boolean>>;
+  userValidated: UserValidation;
 }) => {
   return (
     <div
@@ -37,6 +40,11 @@ export const LoginComponent = ({
           <label>
             <strong style={{ fontSize: "20px" }}>Username</strong>
           </label>
+
+          {userValidated.invalidName && (
+            <p style={{ color: "red" }}>{userValidated.nameMessage}</p>
+          )}
+
           <InputComponent placeholder="enter username" type="text" />
 
           <label>
@@ -44,6 +52,11 @@ export const LoginComponent = ({
               Password
             </strong>
           </label>
+
+          {userValidated.invalidPass && (
+            <p style={{ color: "red" }}>{userValidated.passMessage}</p>
+          )}
+
           <InputComponent placeholder="enter password" type="password" />
           <br />
         </div>
