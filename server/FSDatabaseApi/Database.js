@@ -39,16 +39,20 @@ export class Database {
             if (obj != null) {
                 const user = users.find(item => item.name == obj.name);
 
-                if (!user) resolve(new DatabaseResponse(false, "User not Found!"));
+                if (!user) resolve(new DatabaseResponse(false, "User not Found!", null));
 
-                else if (user.isOnline) resolve(new DatabaseResponse(false, "User already online"));
+                else if (user.isOnline) resolve(new DatabaseResponse(false, "Username Taken!", null));
 
                 else if (user.password != obj.password) {
-                    resolve(new DatabaseResponse(false, "Wrong password"));
+                    resolve(new DatabaseResponse(false, "Wrong password", null));
                 }
-                else resolve(new DatabaseResponse(true, "user found", user));
+                else {
+                    user.password = "";
+                    resolve(new DatabaseResponse(true, "user found", user));
+                }
             }
             else {
+                users.forEach(user => user.password = "");
                 resolve(new DatabaseResponse(true, "Users list", users));
             }
         })

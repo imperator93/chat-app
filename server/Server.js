@@ -25,7 +25,7 @@ app.get("/chatApp/users", async (_, res) => {
     try {
         const dbResponse = await Database.readUserFromFile();
         if (dbResponse.success) {
-            res.json(dbResponse.data)
+            res.json(dbResponse)
         }
     } catch (err) {
         res.json({
@@ -41,13 +41,11 @@ app.post("/chatApp/user", async (req, res) => {
 
         const dbResponse = await Database.readUserFromFile(user);
 
-        if (!dbResponse.success) res.json(dbResponse.reason);
-
-        else res.json(dbResponse.data);
+        res.json(dbResponse);
 
     } catch (err) {
         res.json({
-            message: err.mesage
+            message: err
         })
     }
 })

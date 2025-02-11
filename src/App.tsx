@@ -15,10 +15,18 @@ import { getUser, getUsers, postUser, putUser } from "./Api/UsersCRUD";
 import { GetUserType } from "./Types/GetUserType";
 
 import "./style.css";
+import { UserValidation } from "./Types/UserValidation";
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [messages, setMessages] = useState<Message[]>();
   const [currentUser, setCurrentUser] = useState<User>();
+  const [userValidated, setUserValidated] = useState<UserValidation>({
+    validName: false,
+    validPass: false,
+    errMessage: "",
+  });
+
+  const [messages, setMessages] = useState<Message[]>([]);
+
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
@@ -32,7 +40,7 @@ export const App = () => {
         return () => clearInterval(i);
       }, 1000);
     }
-  }, []);
+  }, [currentUser?.isOnline]);
 
   useEffect(() => {
     if (currentUser != undefined)
@@ -101,6 +109,7 @@ export const App = () => {
           <>
             {!login ? (
               <SignInComponent
+                userValidated={userValidated}
                 handleSignInSubmit={handleSignInSubmit}
                 setLogin={setLogin}
               />

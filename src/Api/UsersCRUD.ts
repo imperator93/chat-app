@@ -4,14 +4,19 @@ import { User } from "../Types/User";
 import { GetUserType } from "../Types/GetUserType";
 
 import { CON_STRING } from "../CONSTANTS/CONNECTION_STRING";
+import {
+  DatabaseResponseUser,
+  DatabaseResponseUsers,
+} from "../Types/DatabaseResponse";
+import { UserValidation } from "../Types/UserValidation";
 
 //GET USERS
 export const getUsers = async (
   setUsers: React.Dispatch<SetStateAction<User[]>>
 ) => {
   const response = await fetch(`${CON_STRING}/chatApp/users`);
-  const data = await response.json();
-  setUsers(data);
+  const usersFromApi: DatabaseResponseUsers = await response.json();
+  setUsers(usersFromApi.data);
 };
 
 //GET USER
@@ -26,27 +31,31 @@ export const getUser = async (
     },
     body: JSON.stringify(user),
   });
-  const data = await response.json();
-  setCurrentUser(data);
+  const userFromApi: DatabaseResponseUser = await response.json();
+  if (!userFromApi.success) {
+    console.log(userFromApi.reason);
+  } else setCurrentUser(userFromApi.data);
 };
 
 //POST USER
 export const postUser = async (
   user: Omit<User, "userId">,
-  setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
+  setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>,
+  setUserValidated: React.Dispatch<SetStateAction<UserValidation>>
 ) => {
   try {
-    const response = await fetch(`${CON_STRING}/chatApp/users`, {
+    const response = await fetch(`${CON_STRING}/chatApp/user`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify(user),
     });
-
     if (response.ok) {
-      const userFromServer: User = await response.json();
-      setCurrentUser(userFromServer);
+      const userFromApi: DatabaseResponseUser = await response.json();
+      if (!userFromApi.success) {
+        console.log(userFromApi.reason);
+      } else setCurrentUser(userFromApi.data);
     }
   } catch (err: unknown) {
     console.error(err);

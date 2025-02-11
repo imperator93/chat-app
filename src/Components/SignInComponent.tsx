@@ -8,9 +8,11 @@ import { InputComponent } from "./MinorComponents/InputComponent";
 export const SignInComponent = ({
   handleSignInSubmit,
   setLogin,
+  userValidated,
 }: {
   handleSignInSubmit: (event: React.FormEvent, avatarSelected: string) => void;
   setLogin: React.Dispatch<SetStateAction<boolean>>;
+  userValidated: { validName: boolean; validPass: boolean };
 }) => {
   const [avatarSelected, setAvatarSelected] = useState("");
 
@@ -42,6 +44,9 @@ export const SignInComponent = ({
           <label>
             <strong style={{ fontSize: "20px" }}>Username</strong>
           </label>
+          {userValidated.validName && (
+            <p style={{ color: "red" }}>Username exists</p>
+          )}
           <InputComponent placeholder="enter username" type="text" />
 
           <label>
@@ -49,6 +54,9 @@ export const SignInComponent = ({
               Password
             </strong>
           </label>
+          {userValidated.validPass && (
+            <p style={{ color: "red" }}>Wrong password</p>
+          )}
           <InputComponent placeholder="enter password" type="password" />
           <br />
           <strong style={{ fontSize: "20px" }}>Pick avatar</strong>
