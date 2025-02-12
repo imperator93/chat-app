@@ -1,15 +1,15 @@
-import { SetStateAction } from "react";
 import { Button } from "./MinorComponents/Button";
 import { InputComponent } from "./MinorComponents/InputComponent";
+
 import { UserValidation } from "../Types/UserValidation";
 
 export const LoginComponent = ({
   handleLogInSubmit,
-  setLogin,
+  handleLogToSignSwitch,
   userValidated,
 }: {
   handleLogInSubmit: (event: React.FormEvent) => void;
-  setLogin: React.Dispatch<SetStateAction<boolean>>;
+  handleLogToSignSwitch: () => void;
   userValidated: UserValidation;
 }) => {
   return (
@@ -63,7 +63,9 @@ export const LoginComponent = ({
 
         <Button>Submit</Button>
       </form>
-      <button onClick={() => setLogin(false)}>Back to sign in screen</button>
+      <button onClick={() => handleLogToSignSwitch()}>
+        Back to sign in screen
+      </button>
     </div>
   );
 };

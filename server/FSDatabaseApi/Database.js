@@ -1,6 +1,5 @@
 import * as fs from "fs";
 
-import { handleDuplicateUser } from "./../helpers/handleDuplicateUser.js"
 import { DatabaseResponse } from "../models/DatabaseResponse.js";
 
 const USER_DATABASE_STRING = "C:\\Users\\stoja\\PROJECTS\\Chat-app\\server\\FSDatabaseApi\\UserDatabase.txt"
@@ -41,13 +40,14 @@ export class Database {
 
                 if (!user) resolve(new DatabaseResponse(false, "User not Found!", null));
 
-                else if (user.isOnline) resolve(new DatabaseResponse(false, "Username Taken!", null));
-
                 else if (user.password != obj.password) {
                     resolve(new DatabaseResponse(false, "Wrong password", null));
                 }
+
                 else {
                     user.password = "";
+                    user.isOnline = true;
+                    this.changeUserFromFile(user);
                     resolve(new DatabaseResponse(true, "user found", user));
                 }
             }
@@ -61,17 +61,17 @@ export class Database {
     static changeUserFromFile = async (obj) => new Promise((resolve, reject) => {
         fs.readFile(USER_DATABASE_STRING, "utf-8", (err, usersJson) => {
 
-            if (err) reject(err);
+            if (err) reject(new DatabaseResponse(false, err.message, null));
 
             const users = JSON.parse(usersJson);
 
             const userIndex = users.findIndex(item => item.userId == obj.userId);
 
-            users[userIndex] = obj;
+            users[userIndex] = { ...obj, password: users[userIndex].password };
 
             fs.writeFile(USER_DATABASE_STRING, JSON.stringify(users), (err) => {
                 if (err) reject(err.message);
-                resolve(users[userIndex]);
+                resolve(new DatabaseResponse(true, "User updated", obj));
             })
         })
     })

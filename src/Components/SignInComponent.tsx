@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 
 import { avatarArr } from "../TEST-INPUTS/AvatarArr";
 
@@ -8,11 +8,11 @@ import { UserValidation } from "../Types/UserValidation";
 
 export const SignInComponent = ({
   handleSignInSubmit,
-  setLogin,
+  handleLogToSignSwitch,
   userValidated,
 }: {
   handleSignInSubmit: (event: React.FormEvent, avatarSelected: string) => void;
-  setLogin: React.Dispatch<SetStateAction<boolean>>;
+  handleLogToSignSwitch: () => void;
   userValidated: UserValidation;
 }) => {
   const [avatarSelected, setAvatarSelected] = useState("");
@@ -115,7 +115,9 @@ export const SignInComponent = ({
         </div>
         <Button>Submit</Button>
       </form>
-      <button onClick={() => setLogin(true)}>LOG IN IF REGISTERED</button>
+      <button onClick={() => handleLogToSignSwitch()}>
+        LOG IN IF REGISTERED
+      </button>
     </div>
   );
 };

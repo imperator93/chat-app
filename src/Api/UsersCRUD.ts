@@ -2,13 +2,13 @@ import { SetStateAction } from "react";
 
 import { User } from "../Types/User";
 import { GetUserType } from "../Types/GetUserType";
-
-import { CON_STRING } from "../CONSTANTS/CONNECTION_STRING";
+import { UserValidation } from "../Types/UserValidation";
 import {
   DatabaseResponseUser,
   DatabaseResponseUsers,
 } from "../Types/DatabaseResponse";
-import { UserValidation } from "../Types/UserValidation";
+
+import { CON_STRING } from "../CONSTANTS/CONNECTION_STRING";
 
 //GET USERS
 export const getUsers = async (
@@ -22,7 +22,8 @@ export const getUsers = async (
 //GET USER
 export const getUser = async (
   user: GetUserType,
-  setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
+  setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>,
+  setUserValidated: React.Dispatch<SetStateAction<UserValidation>>
 ) => {
   const response = await fetch(`${CON_STRING}/chatApp/user/login`, {
     method: "POST",
@@ -31,10 +32,19 @@ export const getUser = async (
     },
     body: JSON.stringify(user),
   });
-  const userFromApi: DatabaseResponseUser = await response.json();
-  if (!userFromApi.success) {
-    console.log(userFromApi.reason);
-  } else setCurrentUser(userFromApi.data);
+  if (response.ok) {
+    const dbResponse: DatabaseResponseUser = await response.json();
+    if (!dbResponse.success) {
+      setUserValidated((prev) => {
+        return dbResponse.reason == " Username doesn't exist!"
+          ? { ...prev, invalidName: true, nameMessage: dbResponse.reason }
+          : { ...prev, invalidPass: true, passMessage: dbResponse.reason };
+      });
+    } else {
+      setCurrentUser(dbResponse.data);
+      console.log(dbResponse.data);
+    }
+  }
 };
 
 //POST USER
@@ -74,7 +84,7 @@ export const putUser = async (
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
 ) => {
   try {
-    const response = await fetch(`${CON_STRING}/chatApp/users`, {
+    const response = await fetch(`${CON_STRING}/chatApp/user/update`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",
@@ -82,10 +92,9 @@ export const putUser = async (
       body: JSON.stringify(user),
     });
     if (response.ok) {
-      const text = await response.text();
-      console.log(text);
-      const userFromServer: User = await response.json();
-      setCurrentUser(userFromServer);
+      const dbResponse: DatabaseResponseUser = await response.json();
+      if (!dbResponse.success) console.log(dbResponse.reason);
+      else setCurrentUser(dbResponse.data);
     }
   } catch (err: unknown) {
     console.log(err);

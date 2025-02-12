@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 
-import { UsersList } from "./Components/UsersList";
+//COMPONENTS
 import { ChatWindow } from "./Components/ChatWindow";
+import { UsersList } from "./Components/UsersList";
 
+//TYPES
 import { User } from "./Types/User";
 import { Message } from "./Types/Message";
 import { SignInComponent } from "./Components/SignInComponent";
 import { LoginComponent } from "./Components/LoginComponent";
+import { UserValidation } from "./Types/UserValidation";
 
 //CRUD
 import { getUser, getUsers, createUser, putUser } from "./Api/UsersCRUD";
@@ -14,26 +17,33 @@ import { getUser, getUsers, createUser, putUser } from "./Api/UsersCRUD";
 //CRUD TYPES
 import { GetUserType } from "./Types/GetUserType";
 
+//HELPERS
+import { getFormInfo } from "./Helpers/GetFormInfo";
+
+//CONSTANTS
+import { initUserValidated } from "./CONSTANTS/BASE_CASES";
+
+//STYLE
 import "./style.css";
-import { UserValidation } from "./Types/UserValidation";
+
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>();
-  const [userValidated, setUserValidated] = useState<UserValidation>({
-    invalidName: false,
-    invalidPass: false,
-    nameMessage: "",
-    passMessage: "",
-  });
+  const [userValidated, setUserValidated] =
+    useState<UserValidation>(initUserValidated);
+  const [userWasClickedOn, setUserWasClickedOn] = useState(false);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [login, setLogin] = useState(false);
 
+  window.addEventListener("beforeunload", () => {
+    if (currentUser) {
+      const user: User = { ...currentUser!, isOnline: false };
+      putUser(user, setCurrentUser);
+    }
+  });
+
   useEffect(() => {
-    const user = sessionStorage.getItem("user");
-
-    if (user) setCurrentUser(JSON.parse(user));
-
     if (currentUser?.isOnline) {
       const i = setInterval(() => {
         getUsers(setUsers);
@@ -42,57 +52,44 @@ export const App = () => {
     }
   }, [currentUser?.isOnline]);
 
-  useEffect(() => {
-    if (currentUser != undefined)
-      sessionStorage.setItem("user", JSON.stringify(currentUser));
-  }, [currentUser]);
-
   //HANDLE SIGN IN
   const handleSignInSubmit = (
     event: React.FormEvent,
     avatarSelected: string
   ) => {
-    event.preventDefault();
+    const data = getFormInfo(event);
 
-    const username = ((event.target as HTMLFormElement)[0] as HTMLInputElement)
-      .value;
-
-    const password = ((event.target as HTMLFormElement)[1] as HTMLInputElement)
-      .value;
     const userToPost: Omit<User, "userId"> = {
       avatar: avatarSelected,
       isAdmin: false,
       isOnline: true,
-      name: username,
-      password: password,
+      ...data,
     };
     createUser(userToPost, setCurrentUser, setUserValidated);
   };
-  console.log(userValidated);
-  //HANDLE LOG IN SUBMIT
+
+  //HANDLE LOG IN
   const handleLogInSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+    const data = getFormInfo(event);
 
-    const username = ((event.target as HTMLFormElement)[0] as HTMLInputElement)
-      .value;
+    const user: GetUserType = data;
 
-    const password = ((event.target as HTMLFormElement)[1] as HTMLInputElement)
-      .value;
-
-    const user: GetUserType = {
-      name: username,
-      password: password,
-    };
-
-    getUser(user, setCurrentUser);
+    getUser(user, setCurrentUser, setUserValidated);
   };
 
+  // HANDLE LOG OUT
   const handleLogOut = () => {
     const user: User = { ...currentUser!, isOnline: false };
     putUser(user, setCurrentUser);
   };
 
+  const handleLogToSignSwitch = () => {
+    setLogin((prev) => !prev);
+    setUserValidated(initUserValidated);
+  };
+
   const handleUserClicked = (event: React.BaseSyntheticEvent) => {};
+
   return (
     <main>
       <div
@@ -111,20 +108,25 @@ export const App = () => {
               <SignInComponent
                 userValidated={userValidated}
                 handleSignInSubmit={handleSignInSubmit}
-                setLogin={setLogin}
+                handleLogToSignSwitch={handleLogToSignSwitch}
               />
             ) : (
               <LoginComponent
                 userValidated={userValidated}
                 handleLogInSubmit={handleLogInSubmit}
-                setLogin={setLogin}
+                handleLogToSignSwitch={handleLogToSignSwitch}
               />
             )}
           </>
         ) : (
           <>
             <UsersList handleUserClicked={handleUserClicked} users={users} />
-            <ChatWindow handleLogOut={handleLogOut} messages={messages} />
+            <ChatWindow
+              users={users}
+              userWasClickedOn={userWasClickedOn}
+              handleLogOut={handleLogOut}
+              messages={messages}
+            />
           </>
         )}
       </div>

@@ -1,12 +1,17 @@
 import { Message } from "../Types/Message";
+import { User } from "../Types/User";
 import { MessageComponent } from "./MessageComponent";
 
 export const ChatWindow = ({
+  users,
   messages,
   handleLogOut,
+  userWasClickedOn,
 }: {
+  users: User[];
   messages: Message[] | undefined;
   handleLogOut: () => void;
+  userWasClickedOn: boolean;
 }) => {
   const handleOnSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -32,6 +37,8 @@ export const ChatWindow = ({
           background: "white",
         }}
       >
+        {!userWasClickedOn && <p style={{ background: "" }}>chatting with:</p>}
+
         {messages?.map((messageItem) => (
           <MessageComponent key={messageItem.id} messageItem={messageItem} />
         ))}

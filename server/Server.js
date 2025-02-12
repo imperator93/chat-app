@@ -65,15 +65,15 @@ app.post("/chatApp/user/register", async (req, res) => {
 }
 )
 
-//UPDATE USER
-// app.put("/chatApp/users", async (req, res) => {
-//     try {
-//         const user = await Database.changeUserFromFile(req.body);
-//         res.json(user);
-//     } catch (err) {
-//         res.json({ message: err.message })
-//     }
-// })
+// UPDATE USER
+app.put("/chatApp/user/update", async (req, res) => {
+    try {
+        const dbResponse = await Database.changeUserFromFile(req.body);
+        res.json(dbResponse);
+    } catch (err) {
+        res.json({ message: err.message })
+    }
+})
 
 
 //POST MESSAGES
