@@ -67,22 +67,46 @@ export class Database {
 
             const userIndex = users.findIndex(item => item.userId == obj.userId);
 
-            users[userIndex] = { ...obj, password: users[userIndex].password };
+            if (users[userIndex]) {
+                users[userIndex] = { ...obj, password: users[userIndex].password };
 
-            fs.writeFile(USER_DATABASE_STRING, JSON.stringify(users), (err) => {
-                if (err) reject(err.message);
-                resolve(new DatabaseResponse(true, "User updated", obj));
-            })
+                fs.writeFile(USER_DATABASE_STRING, JSON.stringify(users), (err) => {
+                    if (err) reject(err.message);
+                    resolve(new DatabaseResponse(true, "User updated", obj));
+                })
+            }
         })
     })
 
-    static writeMessagesToFile = async () => new Promise((resolve, reject) => {
+    static getMessagesFromFile = async () => new Promise((resolve, reject) => {
         fs.readFile(MESSAGES_DATABASE_STRING, "utf-8", (err, data) => {
-            if (err) reject(err.message)
+            if (err) reject(new DatabaseResponse(false, err.message, null))
+            else {
+                const messages = data.length > 0 ? JSON.parse(data) : [];
+                resolve(new DatabaseResponse(true, "Messages fetched!", messages))
+            }
+        })
+    })
 
+    static writeMessageToFile = async (obj) => new Promise((resolve, reject) => {
+        fs.readFile(MESSAGES_DATABASE_STRING, "utf-8", (err, data) => {
+            if (err) reject(new DatabaseResponse(false, err.message, null))
+            else {
+                const messages = data.length > 0 ? JSON.parse(data) : [];
+                messages.push(obj);
+
+                fs.writeFile(MESSAGES_DATABASE_STRING, JSON.stringify(messages), (err, data) => {
+                    if (err) reject(new DatabaseResponse(false, err.message, null))
+
+                    else resolve(new DatabaseResponse(true, "Message posted!", obj))
+                })
+            }
         })
     })
 }
+
+
+
 
 const messages = {
     participants: [],

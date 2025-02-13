@@ -4,6 +4,7 @@ import cors from "cors"
 
 import { User } from "./models/User.model.js";
 import { GetUser } from "./models/GetUser.js";
+import { Message } from "./models/Message.model.js";
 
 const app = express();
 app.use(express.json());
@@ -75,6 +76,27 @@ app.put("/chatApp/user/update", async (req, res) => {
     }
 })
 
+/* MESSAGES */
 
-//POST MESSAGES
-app.post("chatApp/messages")
+// GET MESSAGES
+app.get("/chatApp/messages", async (_, res) => {
+    try {
+        const dbResponse = await Database.getMessagesFromFile();
+        res.json(dbResponse)
+    } catch (err) {
+        res.json({ message: err.mesage })
+    }
+})
+
+// POST MESSAGE
+app.post("/chatApp/messages", async (req, res) => {
+    try {
+        const message = new Message(req.body.content, req.body.userId)
+        const dbResponse = await Database.writeMessageToFile(message)
+        res.json(dbResponse)
+    } catch (err) {
+        res.json({
+            message: err.mesage
+        })
+    }
+})

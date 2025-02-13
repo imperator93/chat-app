@@ -25,28 +25,24 @@ import { initUserValidated } from "./CONSTANTS/BASE_CASES";
 
 //STYLE
 import "./style.css";
-
+//TEST INPUTS
+import { getMessages, postMessage } from "./Api/MessageCRUD";
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>();
   const [userValidated, setUserValidated] =
     useState<UserValidation>(initUserValidated);
-  const [userWasClickedOn, setUserWasClickedOn] = useState(false);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [login, setLogin] = useState(false);
 
-  window.addEventListener("beforeunload", () => {
-    if (currentUser) {
-      const user: User = { ...currentUser!, isOnline: false };
-      putUser(user, setCurrentUser);
-    }
-  });
+  //NEED FIX TO LOGOUT USER ON SESSION UNLOAD OR REFRESH
 
   useEffect(() => {
     if (currentUser?.isOnline) {
       const i = setInterval(() => {
         getUsers(setUsers);
+        getMessages(setMessages);
         return () => clearInterval(i);
       }, 1000);
     }
@@ -83,12 +79,31 @@ export const App = () => {
     putUser(user, setCurrentUser);
   };
 
+  // HANDLE SING IN LOG IN FORMS SWITCH
   const handleLogToSignSwitch = () => {
     setLogin((prev) => !prev);
     setUserValidated(initUserValidated);
   };
 
-  const handleUserClicked = (event: React.BaseSyntheticEvent) => {};
+  //////////////////
+  /* MESSAGES */
+  //////////////////
+
+  // HANDLE SEND MESSAGE
+  const handleSendMessage = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const messageInput = (
+      (event.target as HTMLFormElement)[0] as HTMLInputElement
+    ).value;
+
+    const message: Omit<Message, "messageId" | "date"> = {
+      content: messageInput,
+      userId: currentUser!.userId,
+    };
+
+    postMessage(message, setMessages);
+  };
 
   return (
     <main>
@@ -120,12 +135,12 @@ export const App = () => {
           </>
         ) : (
           <>
-            <UsersList handleUserClicked={handleUserClicked} users={users} />
+            <UsersList users={users} />
             <ChatWindow
               users={users}
-              userWasClickedOn={userWasClickedOn}
-              handleLogOut={handleLogOut}
               messages={messages}
+              handleSendMessage={handleSendMessage}
+              handleLogOut={handleLogOut}
             />
           </>
         )}

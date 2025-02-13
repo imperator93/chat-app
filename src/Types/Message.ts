@@ -1,8 +1,6 @@
-import { User } from "./User";
-
 export type Message = {
-  id: string;
+  messageId: string;
   content: string;
-  from: User;
+  userId: string;
   date: string;
 };

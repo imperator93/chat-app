@@ -1,16 +1,9 @@
 import { User } from "../Types/User";
 
-export const UserComponent = ({
-  user,
-  handleUserClicked,
-}: {
-  user: User;
-  handleUserClicked: (event: React.BaseSyntheticEvent) => void;
-}) => {
+export const UserComponent = ({ user }: { user: User }) => {
   return (
     <button
       id={user.userId}
-      onClick={(event) => handleUserClicked(event)}
       className="user-container"
       style={{
         cursor: "pointer",

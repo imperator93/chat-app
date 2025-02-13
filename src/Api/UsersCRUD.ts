@@ -3,10 +3,7 @@ import { SetStateAction } from "react";
 import { User } from "../Types/User";
 import { GetUserType } from "../Types/GetUserType";
 import { UserValidation } from "../Types/UserValidation";
-import {
-  DatabaseResponseUser,
-  DatabaseResponseUsers,
-} from "../Types/DatabaseResponse";
+import { DatabaseResponse } from "../Types/DatabaseResponse";
 
 import { CON_STRING } from "../CONSTANTS/CONNECTION_STRING";
 
@@ -15,7 +12,7 @@ export const getUsers = async (
   setUsers: React.Dispatch<SetStateAction<User[]>>
 ) => {
   const response = await fetch(`${CON_STRING}/chatApp/users`);
-  const usersFromApi: DatabaseResponseUsers = await response.json();
+  const usersFromApi: DatabaseResponse<User[]> = await response.json();
   setUsers(usersFromApi.data);
 };
 
@@ -33,7 +30,7 @@ export const getUser = async (
     body: JSON.stringify(user),
   });
   if (response.ok) {
-    const dbResponse: DatabaseResponseUser = await response.json();
+    const dbResponse: DatabaseResponse<User> = await response.json();
     if (!dbResponse.success) {
       setUserValidated((prev) => {
         return dbResponse.reason == " Username doesn't exist!"
@@ -42,7 +39,6 @@ export const getUser = async (
       });
     } else {
       setCurrentUser(dbResponse.data);
-      console.log(dbResponse.data);
     }
   }
 };
@@ -65,7 +61,7 @@ export const createUser = async (
       }
     );
     if (response.ok) {
-      const dbResponse: DatabaseResponseUser = await response.json();
+      const dbResponse: DatabaseResponse<User> = await response.json();
       if (!dbResponse.success) {
         setUserValidate((prev) => ({
           ...prev,
@@ -92,7 +88,7 @@ export const putUser = async (
       body: JSON.stringify(user),
     });
     if (response.ok) {
-      const dbResponse: DatabaseResponseUser = await response.json();
+      const dbResponse: DatabaseResponse<User> = await response.json();
       if (!dbResponse.success) console.log(dbResponse.reason);
       else setCurrentUser(dbResponse.data);
     }
