@@ -4,16 +4,16 @@ import { avatarArr } from "../TEST-INPUTS/AvatarArr";
 
 import { Button } from "./MinorComponents/Button";
 import { InputComponent } from "./MinorComponents/InputComponent";
-import { UserValidation } from "../Types/UserValidation";
+import { UserErrors } from "../Types/UserErrors";
 
 export const SignInComponent = ({
   handleSignInSubmit,
   handleLogToSignSwitch,
-  userValidated,
+  userErrors,
 }: {
   handleSignInSubmit: (event: React.FormEvent, avatarSelected: string) => void;
   handleLogToSignSwitch: () => void;
-  userValidated: UserValidation;
+  userErrors: UserErrors[];
 }) => {
   const [avatarSelected, setAvatarSelected] = useState("");
 
@@ -47,9 +47,9 @@ export const SignInComponent = ({
             <strong style={{ fontSize: "20px" }}>Username</strong>
           </label>
 
-          {userValidated.invalidName && (
-            <p style={{ color: "red" }}>Username exists</p>
-          )}
+          {userErrors.map((err) => {
+            return <p style={{ color: "red" }}>{err.ErrorMessage}</p>;
+          })}
 
           <InputComponent placeholder="enter username" type="text" />
 

@@ -9,10 +9,9 @@ import { User } from "./Types/User";
 import { Message } from "./Types/Message";
 import { SignInComponent } from "./Components/SignInComponent";
 import { LoginComponent } from "./Components/LoginComponent";
-import { UserValidation } from "./Types/UserValidation";
 
 //CRUD
-import { getUser, getUsers, createUser, putUser } from "./Api/UsersCRUD";
+import { getUser, getUsers, createUser } from "./Api/UsersCRUD";
 
 //CRUD TYPES
 import { GetUserType } from "./Types/GetUserType";
@@ -20,18 +19,15 @@ import { GetUserType } from "./Types/GetUserType";
 //HELPERS
 import { getFormInfo } from "./Helpers/GetFormInfo";
 
-//CONSTANTS
-import { initUserValidated } from "./CONSTANTS/BASE_CASES";
-
 //STYLE
 import "./style.css";
 //TEST INPUTS
 import { getMessages, postMessage } from "./Api/MessageCRUD";
+import { UserErrors } from "./Types/UserErrors";
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>();
-  const [userValidated, setUserValidated] =
-    useState<UserValidation>(initUserValidated);
+  const [userErrors, setUserErrors] = useState<UserErrors[]>([]);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [login, setLogin] = useState(false);
@@ -57,11 +53,10 @@ export const App = () => {
 
     const userToPost: Omit<User, "userId"> = {
       avatar: avatarSelected,
-      isAdmin: false,
       isOnline: true,
       ...data,
     };
-    createUser(userToPost, setCurrentUser, setUserValidated);
+    createUser(userToPost, setCurrentUser, setUserErrors);
   };
 
   //HANDLE LOG IN
@@ -70,7 +65,7 @@ export const App = () => {
 
     const user: GetUserType = data;
 
-    getUser(user, setCurrentUser, setUserValidated);
+    getUser(user, setCurrentUser, setUserErrors);
   };
 
   // HANDLE LOG OUT
@@ -82,7 +77,7 @@ export const App = () => {
   // HANDLE SING IN LOG IN FORMS SWITCH
   const handleLogToSignSwitch = () => {
     setLogin((prev) => !prev);
-    setUserValidated(initUserValidated);
+    setUserErrors([]);
   };
 
   //////////////////
@@ -121,13 +116,13 @@ export const App = () => {
           <>
             {!login ? (
               <SignInComponent
-                userValidated={userValidated}
+                userErrors={userErrors}
                 handleSignInSubmit={handleSignInSubmit}
                 handleLogToSignSwitch={handleLogToSignSwitch}
               />
             ) : (
               <LoginComponent
-                userValidated={userValidated}
+                userErrors={userErrors}
                 handleLogInSubmit={handleLogInSubmit}
                 handleLogToSignSwitch={handleLogToSignSwitch}
               />

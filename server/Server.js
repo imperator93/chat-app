@@ -52,7 +52,7 @@ app.post("/chatApp/user/login", async (req, res) => {
 //ADD USER
 app.post("/chatApp/user/register", async (req, res) => {
     try {
-        const user = new User(req.body.name, req.body.avatar, req.body.isAdmin, req.body.isOnline, req.body.password);
+        const user = new User(req.body.name, req.body.avatar, req.body.isOnline, req.body.password);
 
         const dbResponse = await Database.writeUserToFile(user);
 

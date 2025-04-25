@@ -1,16 +1,15 @@
+import { UserErrors } from "../Types/UserErrors";
 import { Button } from "./MinorComponents/Button";
 import { InputComponent } from "./MinorComponents/InputComponent";
-
-import { UserValidation } from "../Types/UserValidation";
 
 export const LoginComponent = ({
   handleLogInSubmit,
   handleLogToSignSwitch,
-  userValidated,
+  userErrors,
 }: {
   handleLogInSubmit: (event: React.FormEvent) => void;
   handleLogToSignSwitch: () => void;
-  userValidated: UserValidation;
+  userErrors: UserErrors[];
 }) => {
   return (
     <div
@@ -41,9 +40,9 @@ export const LoginComponent = ({
             <strong style={{ fontSize: "20px" }}>Username</strong>
           </label>
 
-          {userValidated.invalidName && (
-            <p style={{ color: "red" }}>{userValidated.nameMessage}</p>
-          )}
+          {userErrors.map((err) => {
+            return <p style={{ color: "red" }}>{err.ErrorMessage}</p>;
+          })}
 
           <InputComponent placeholder="enter username" type="text" />
 
@@ -53,9 +52,9 @@ export const LoginComponent = ({
             </strong>
           </label>
 
-          {userValidated.invalidPass && (
-            <p style={{ color: "red" }}>{userValidated.passMessage}</p>
-          )}
+          {userErrors.map((err) => (
+            <p style={{ color: "red" }}>{err.ErrorMessage}</p>
+          ))}
 
           <InputComponent placeholder="enter password" type="password" />
           <br />

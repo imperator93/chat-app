@@ -1,1 +1,1 @@
-export const CON_STRING = "http://localhost:3000";
+export const CON_STRING = "http://localhost:5041";

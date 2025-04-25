@@ -1,6 +1,5 @@
 import { CON_STRING } from "../CONSTANTS/CONNECTION_STRING";
 import { Message } from "../Types/Message";
-import { DatabaseResponse } from "../Types/DatabaseResponse";
 import { SetStateAction } from "react";
 
 // GET MESSAGES

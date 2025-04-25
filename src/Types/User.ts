@@ -3,6 +3,5 @@ export type User = {
   name: string;
   password: string;
   avatar: string;
-  isAdmin: boolean;
   isOnline: boolean;
 };
