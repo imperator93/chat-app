@@ -1,4 +1,4 @@
 export type UserErrors = {
-  ErorrCode: string;
-  ErrorMessage: string;
+  erorrCode: string;
+  errorMessage: string;
 };

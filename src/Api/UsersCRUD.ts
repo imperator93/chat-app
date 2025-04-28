@@ -42,22 +42,15 @@ export const createUser = async (
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>,
   setUserErrors: React.Dispatch<SetStateAction<UserErrors[]>>
 ) => {
-  try {
-    const response: Response = await fetch(`${CON_STRING}/user/register`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-
-    if (!response.ok) {
-      const errors: UserErrors[] = await response.json();
-      setUserErrors(errors);
-    }
-
-    setCurrentUser(await response.json());
-  } catch (err: unknown) {
-    console.error(err);
-  }
+  const response: Response = await fetch(`${CON_STRING}/user/register`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(user),
+  });
+  if (!response.ok) {
+    const errors: UserErrors[] = await response.json();
+    setUserErrors(errors);
+  } else setCurrentUser(await response.json());
 };

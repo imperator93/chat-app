@@ -16,7 +16,7 @@ export const SignInComponent = ({
   userErrors: UserErrors[];
 }) => {
   const [avatarSelected, setAvatarSelected] = useState("");
-
+  console.log(userErrors);
   return (
     <div
       className="login-component-container"
@@ -46,9 +46,12 @@ export const SignInComponent = ({
           <label>
             <strong style={{ fontSize: "20px" }}>Username</strong>
           </label>
-
           {userErrors.map((err) => {
-            return <p style={{ color: "red" }}>{err.ErrorMessage}</p>;
+            return (
+              <p key={`${err}`} style={{ color: "red" }}>
+                {err.errorMessage}
+              </p>
+            );
           })}
 
           <InputComponent placeholder="enter username" type="text" />

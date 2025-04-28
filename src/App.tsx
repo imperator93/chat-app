@@ -25,23 +25,18 @@ import "./style.css";
 import { getMessages, postMessage } from "./Api/MessageCRUD";
 import { UserErrors } from "./Types/UserErrors";
 export const App = () => {
+  const [login, setLogin] = useState(false);
+
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>();
   const [userErrors, setUserErrors] = useState<UserErrors[]>([]);
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [login, setLogin] = useState(false);
 
   //NEED FIX TO LOGOUT USER ON SESSION UNLOAD OR REFRESH
 
   useEffect(() => {
-    if (currentUser?.isOnline) {
-      const i = setInterval(() => {
-        getUsers(setUsers);
-        getMessages(setMessages);
-        return () => clearInterval(i);
-      }, 1000);
-    }
+    if (currentUser?.isOnline) getUsers(setUsers);
   }, [currentUser?.isOnline]);
 
   //HANDLE SIGN IN
@@ -99,7 +94,6 @@ export const App = () => {
 
     postMessage(message, setMessages);
   };
-
   return (
     <main>
       <div
