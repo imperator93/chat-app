@@ -11,7 +11,7 @@ import { SignInComponent } from "./Components/SignInComponent";
 import { LoginComponent } from "./Components/LoginComponent";
 
 //CRUD
-import { getUser, getUsers, createUser } from "./Api/UsersCRUD";
+import { getUser, getUsers, createUser, putUser } from "./Api/UsersCRUD";
 
 //CRUD TYPES
 import { GetUserType } from "./Types/GetUserType";
@@ -65,7 +65,7 @@ export const App = () => {
   // HANDLE LOG OUT
   const handleLogOut = () => {
     const user: User = { ...currentUser!, isOnline: false };
-    putUser(user, setCurrentUser);
+    putUser(user, setUserErrors, setCurrentUser);
   };
 
   // HANDLE SING IN LOG IN FORMS SWITCH

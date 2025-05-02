@@ -53,3 +53,23 @@ export const createUser = async (
     setUserErrors(errors);
   } else setCurrentUser(await response.json());
 };
+
+//PUT USER
+export const putUser = async (
+  user: User,
+  setUserErrors: React.Dispatch<SetStateAction<UserErrors[]>>,
+  setUser: React.Dispatch<SetStateAction<User | undefined>>
+) => {
+  const response = await fetch(`${CON_STRING}/user`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(user),
+  });
+  if (!response.ok) {
+    setUserErrors(await response.json());
+  } else {
+    setUser(await response.json());
+  }
+};
