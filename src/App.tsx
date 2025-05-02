@@ -15,15 +15,14 @@ import { getUser, getUsers, createUser } from "./Api/UsersCRUD";
 
 //CRUD TYPES
 import { GetUserType } from "./Types/GetUserType";
+import { UserErrors } from "./Types/UserErrors";
 
 //HELPERS
 import { getFormInfo } from "./Helpers/GetFormInfo";
 
 //STYLE
 import "./style.css";
-//TEST INPUTS
-import { getMessages, postMessage } from "./Api/MessageCRUD";
-import { UserErrors } from "./Types/UserErrors";
+
 export const App = () => {
   const [login, setLogin] = useState(false);
 

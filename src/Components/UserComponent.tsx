@@ -1,9 +1,8 @@
 import { User } from "../Types/User";
 
-export const UserComponent = ({ user, key }: { user: User; key: string }) => {
+export const UserComponent = ({ user }: { user: User }) => {
   return (
     <button
-      key={key}
       id={user.userId}
       className="user-container"
       style={{

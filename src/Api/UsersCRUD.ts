@@ -29,7 +29,6 @@ export const getUser = async (
       body: JSON.stringify(user),
     });
     if (!response.ok) setUserErrors(await response.json());
-
     setCurrentUser(await response.json());
   } catch (err: unknown) {
     console.log(err);
