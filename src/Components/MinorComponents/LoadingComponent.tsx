@@ -17,7 +17,7 @@ export const LoadingComponent = ({ loadingType }: { loadingType: string }) => {
         ...prev,
         toBeSliced: loadingType.slice(0, prev.iterator),
         iterator:
-          prev.toBeSliced.length != loadingType.length ? prev.iterator++ : 0,
+          prev.toBeSliced.length != loadingType.length ? prev.iterator + 1 : 0,
       }));
     }, 50);
 

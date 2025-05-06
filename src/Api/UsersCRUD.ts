@@ -20,19 +20,17 @@ export const getUser = async (
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>,
   setUserErrors: React.Dispatch<SetStateAction<UserErrors[]>>
 ) => {
-  try {
-    const response = await fetch(`${CON_STRING}/user/login`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-    if (!response.ok) setUserErrors(await response.json());
-    setCurrentUser(await response.json());
-  } catch (err: unknown) {
-    console.log(err);
-  }
+  const response = await fetch(`${CON_STRING}/user/login`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(user),
+  });
+  const data = await response.json();
+
+  if (!response.ok) setUserErrors(data);
+  else setCurrentUser(data);
 };
 
 //POST USER
@@ -48,17 +46,17 @@ export const createUser = async (
     },
     body: JSON.stringify(user),
   });
-  if (!response.ok) {
-    const errors: UserErrors[] = await response.json();
-    setUserErrors(errors);
-  } else setCurrentUser(await response.json());
+  const data = await response.json();
+
+  if (!response.ok) setUserErrors(data);
+  else setCurrentUser(data);
 };
 
 //PUT USER
 export const putUser = async (
   user: User,
   setUserErrors: React.Dispatch<SetStateAction<UserErrors[]>>,
-  setUser: React.Dispatch<SetStateAction<User | undefined>>
+  setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>
 ) => {
   const response = await fetch(`${CON_STRING}/user`, {
     method: "PUT",
@@ -67,9 +65,8 @@ export const putUser = async (
     },
     body: JSON.stringify(user),
   });
-  if (!response.ok) {
-    setUserErrors(await response.json());
-  } else {
-    setUser(await response.json());
-  }
+  const data = await response.json();
+
+  if (!response.ok) setUserErrors(data);
+  else setCurrentUser(data);
 };

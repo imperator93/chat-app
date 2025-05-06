@@ -11,6 +11,7 @@ export const LoginComponent = ({
   handleLogToSignSwitch: () => void;
   userErrors: UserErrors[];
 }) => {
+  console.log(userErrors);
   return (
     <div
       className="login-component-container"
@@ -40,9 +41,15 @@ export const LoginComponent = ({
             <strong style={{ fontSize: "20px" }}>Username</strong>
           </label>
 
-          {userErrors.map((err) => {
-            return <p style={{ color: "red" }}>{err.ErrorMessage}</p>;
-          })}
+          {userErrors.length > 0 &&
+            userErrors.map((err) => {
+              return (
+                <p style={{ color: "red" }}>
+                  {err.errorMessage == "User doesn't exist!" &&
+                    err.errorMessage}
+                </p>
+              );
+            })}
 
           <InputComponent placeholder="enter username" type="text" />
 
@@ -52,9 +59,12 @@ export const LoginComponent = ({
             </strong>
           </label>
 
-          {userErrors.map((err) => (
-            <p style={{ color: "red" }}>{err.ErrorMessage}</p>
-          ))}
+          {userErrors.length > 0 &&
+            userErrors.map((err) => (
+              <p style={{ color: "red" }}>
+                {err.errorMessage == "Incorrect password!" && err.errorMessage}
+              </p>
+            ))}
 
           <InputComponent placeholder="enter password" type="password" />
           <br />

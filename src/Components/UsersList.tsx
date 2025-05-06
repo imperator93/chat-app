@@ -23,7 +23,7 @@ export const UsersList = ({ users }: { users: User[] }) => {
           .filter((user) => user.isOnline)
           .map((user) => <UserComponent user={user} key={user.userId} />)
       ) : (
-        <LoadingComponent key={Math.random()} loadingType="Fetching users..." />
+        <LoadingComponent key="online" loadingType="Fetching users..." />
       )}
 
       <strong>OFFLINE</strong>
@@ -33,7 +33,7 @@ export const UsersList = ({ users }: { users: User[] }) => {
           .filter((user) => !user.isOnline)
           .map((user) => <UserComponent user={user} key={user.userId} />)
       ) : (
-        <LoadingComponent key={Math.random()} loadingType="Fetching users..." />
+        <LoadingComponent key="offline" loadingType="Fetching users..." />
       )}
     </div>
   );
