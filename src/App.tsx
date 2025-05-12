@@ -25,6 +25,7 @@ import "./style.css";
 
 export const App = () => {
   const [login, setLogin] = useState(false);
+  const [token, setToken] = useState("");
 
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>();
@@ -35,11 +36,19 @@ export const App = () => {
   //NEED FIX TO LOGOUT USER ON SESSION UNLOAD OR REFRESH
 
   useEffect(() => {
-    if (currentUser?.isOnline) getUsers(setUsers);
-  }, [currentUser?.isOnline]);
+    if (currentUser?.isOnline) getUsers(setUsers, token);
+  }, [currentUser?.isOnline, token]);
+
+  useEffect(() => {
+    const jwt = localStorage.getItem("Jwt");
+    if (jwt != null) {
+      setToken(JSON.parse(jwt));
+    }
+    return;
+  }, [token]);
 
   //HANDLE SIGN IN
-  const handleSignInSubmit = (
+  const handleSignInSubmit = async (
     event: React.FormEvent,
     avatarSelected: string
   ) => {
@@ -50,7 +59,9 @@ export const App = () => {
       isOnline: true,
       ...data,
     };
-    createUser(userToPost, setCurrentUser, setUserErrors);
+    await createUser(userToPost, setCurrentUser, setUserErrors, setToken);
+    localStorage.setItem("Jwt", token);
+    console.log(localStorage);
   };
 
   //HANDLE LOG IN
@@ -65,7 +76,7 @@ export const App = () => {
   // HANDLE LOG OUT
   const handleLogOut = () => {
     const user: User = { ...currentUser!, isOnline: false };
-    putUser(user, setUserErrors, setCurrentUser);
+    putUser(user, setUserErrors, setCurrentUser, token);
   };
 
   // HANDLE SING IN LOG IN FORMS SWITCH
@@ -90,8 +101,6 @@ export const App = () => {
       content: messageInput,
       userId: currentUser!.userId,
     };
-
-    postMessage(message, setMessages);
   };
   return (
     <main>
