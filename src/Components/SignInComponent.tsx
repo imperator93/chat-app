@@ -16,7 +16,6 @@ export const SignInComponent = ({
   userErrors: UserErrors[];
 }) => {
   const [avatarSelected, setAvatarSelected] = useState("");
-  console.log(userErrors);
   return (
     <div
       className="login-component-container"

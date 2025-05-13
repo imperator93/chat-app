@@ -41,6 +41,8 @@ export const getUser = async (
   else {
     setToken(data.token);
     setCurrentUser(data.userResponse);
+    sessionStorage.setItem("token", data.token);
+    sessionStorage.setItem("user", JSON.stringify(data.userResponse));
   }
 };
 
@@ -64,6 +66,8 @@ export const createUser = async (
   else {
     setToken(data.token);
     setCurrentUser(data.userResponse);
+    sessionStorage.setItem("token", data.token);
+    sessionStorage.setItem("user", JSON.stringify(data.userResponse));
   }
 };
 
@@ -74,7 +78,7 @@ export const putUser = async (
   setCurrentUser: React.Dispatch<SetStateAction<User | undefined>>,
   token: string
 ) => {
-  const response = await fetch(`${CON_STRING}/user`, {
+  const response = await fetch(`${CON_STRING}/user/change`, {
     method: "PUT",
     headers: {
       "content-type": "application/json",
@@ -83,7 +87,8 @@ export const putUser = async (
     body: JSON.stringify(user),
   });
   const data = await response.json();
-
-  if (!response.ok) setUserErrors(data);
-  else setCurrentUser(data);
+  console.log(data);
+  if (!response.ok) {
+    setUserErrors(data);
+  } else setCurrentUser(data);
 };

@@ -11,7 +11,6 @@ export const LoginComponent = ({
   handleLogToSignSwitch: () => void;
   userErrors: UserErrors[];
 }) => {
-  console.log(userErrors);
   return (
     <div
       className="login-component-container"

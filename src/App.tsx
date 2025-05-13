@@ -22,6 +22,7 @@ import { getFormInfo } from "./Helpers/GetFormInfo";
 
 //STYLE
 import "./style.css";
+import { loadFromStorage } from "./Helpers/LoadFromStorage";
 
 export const App = () => {
   const [login, setLogin] = useState(false);
@@ -35,17 +36,14 @@ export const App = () => {
 
   //NEED FIX TO LOGOUT USER ON SESSION UNLOAD OR REFRESH
 
+  //load forom session storage
+  useEffect(() => {
+    loadFromStorage(setCurrentUser, setToken);
+  }, []);
+
   useEffect(() => {
     if (currentUser?.isOnline) getUsers(setUsers, token);
   }, [currentUser?.isOnline, token]);
-
-  useEffect(() => {
-    const jwt = localStorage.getItem("Jwt");
-    if (jwt != null) {
-      setToken(JSON.parse(jwt));
-    }
-    return;
-  }, [token]);
 
   //HANDLE SIGN IN
   const handleSignInSubmit = async (
@@ -61,7 +59,6 @@ export const App = () => {
     };
     await createUser(userToPost, setCurrentUser, setUserErrors, setToken);
     localStorage.setItem("Jwt", token);
-    console.log(localStorage);
   };
 
   //HANDLE LOG IN
@@ -70,7 +67,7 @@ export const App = () => {
 
     const user: GetUserType = data;
 
-    getUser(user, setCurrentUser, setUserErrors);
+    getUser(user, setCurrentUser, setUserErrors, setToken);
   };
 
   // HANDLE LOG OUT
